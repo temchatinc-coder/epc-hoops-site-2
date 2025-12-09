@@ -1,0 +1,36 @@
+name: Update EPC Leaders Daily
+
+on:
+  schedule:
+    # 17:00 UTC ≈ 12:00 PM (noon) Eastern (standard time)
+    - cron: "0 17 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  update-leaders:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Run stats script
+        run: python epc_stats_leaders.py
+
+      - name: Commit and push updated leaders
+        run: |
+          git config user.name "EPC Stats Bot"
+          git config user.email "you@example.com"
+          git add epc_leaders.json
+          git commit -m "Auto-update EPC leaders JSON" || echo "No changes to commit"
+          git push
