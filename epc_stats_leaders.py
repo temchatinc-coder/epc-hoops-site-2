@@ -19,23 +19,25 @@ from bs4 import BeautifulSoup
 #  - Paste it as the value for "Parkland"
 #
 TEAM_STATS_URLS: Dict[str, str] = {
-    "Parkland": "https://highschoolsports.lehighvalleylive.com/school/south-whitehall-township-parkland/boysbasketball/season/2025-2026/stats",
-    "Liberty": "https://highschoolsports.lehighvalleylive.com/school/bethlehem-liberty/boysbasketball/season/2025-2026/stats",
-    "William Allen": "https://highschoolsports.lehighvalleylive.com/school/allentown-william-allen/boysbasketball/season/2025-2026/stats",
-    "Allentown Central Catholic": "https://highschoolsports.lehighvalleylive.com/school/allentown-allentown-central-catholic/boysbasketball/season/2025-2026/stats",
-    "Dieruff": "https://highschoolsports.lehighvalleylive.com/school/allentown-dieruff/boysbasketball/season/2025-2026/stats",
-    "Emmaus": "https://highschoolsports.lehighvalleylive.com/school/emmaus-emmaus/boysbasketball/season/2025-2026/stats",
-    "Whitehall": "https://highschoolsports.lehighvalleylive.com/school/whitehall-township-whitehall/boysbasketball/season/2025-2026/stats",
-    "Pocono Mountain West": "https://highschoolsports.lehighvalleylive.com/school/tobyhanna-township-pocono-mountain-west/boysbasketball/season/2025-2026/stats",
-    "Pocono Mountain East": "https://highschoolsports.lehighvalleylive.com/school/pocono-township-pocono-mountain-east/boysbasketball/season/2025-2026/stats",
-    "East Stroudsburg North": "https://highschoolsports.lehighvalleylive.com/school/delaware-township-east-stroudsburg-north/boysbasketball/season/2025-2026/stats",
-    "East Stroudsburg South": "https://highschoolsports.lehighvalleylive.com/school/east-stroudsburg-east-stroudsburg-south/boysbasketball/season/2025-2026/stats",
-    "Pleasant Valley": "https://highschoolsports.lehighvalleylive.com/school/chestnuthill-township-pleasant-valley/boysbasketball/season/2025-2026/stats",
-    "Northampton": "https://highschoolsports.lehighvalleylive.com/school/northampton-northampton/boysbasketball/season/2025-2026/stats",
-    "Nazareth": "https://highschoolsports.lehighvalleylive.com/school/upper-nazareth-township-nazareth/boysbasketball/season/2025-2026/stats",
-    "Bethlehem Catholic": "https://highschoolsports.lehighvalleylive.com/school/bethlehem-bethlehem-catholic/boysbasketball/season/2025-2026/stats",
-    "Easton": "https://highschoolsports.lehighvalleylive.com/school/palmer-township-easton/boysbasketball/season/2025-2026/stats",
-    "Freedom": "https://highschoolsports.lehighvalleylive.com/school/bethlehem-township-freedom/boysbasketball/season/2025-2026/stats",
+   TEAM_STATS_URLS: Dict[str, str] = {
+    "Parkland": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/parkland-high-school-allentown-pa/stats",
+    "Liberty": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/liberty-high-school-bethlehem-pa/stats",
+    "William Allen": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/william-allen-high-school-allentown-pa/stats",
+    "Allentown Central Catholic": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/allentown-central-catholic-high-school-allentown-pa/stats",
+    "Dieruff": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/louis-e-dieruff-high-school-allentown-pa/stats",
+    "Emmaus": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/emmaus-high-school-emmaus-pa/stats",
+    "Whitehall": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/whitehall-high-school-whitehall-pa/stats",
+    "Pocono Mountain West": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/pocono-mountain-west-high-school-pocono-summit-pa/stats",
+    "Pocono Mountain East": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/pocono-mountain-east-high-school-swiftwater-pa/stats",
+    "East Stroudsburg North": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/east-stroudsburg-north-high-school-dingmans-ferry-pa/stats",
+    "East Stroudsburg South": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/east-stroudsburg-south-high-school-east-stroudsburg-pa/stats",
+    "Pleasant Valley": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/pleasant-valley-high-school-brodheadsville-pa/stats",
+    "Northampton": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/northampton-high-school-northampton-pa/stats",
+    "Nazareth": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/nazareth-area-high-school-nazareth-pa/stats",
+    "Bethlehem Catholic": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/bethlehem-catholic-high-school-bethlehem-pa/stats",
+    "Easton": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/easton-area-high-school-easton-pa/stats",
+    "Freedom": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/freedom-high-school-bethlehem-pa/stats",
+    "Stroudsburg": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/stroudsburg-high-school-stroudsburg-pa/stats",
 }
 
 # Minimum games played to be included in individual leaders
