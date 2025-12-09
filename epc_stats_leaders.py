@@ -238,11 +238,6 @@ def build_leaders(players: List[PlayerStat], teams: List[TeamStat]) -> dict:
 
 def main():
     print("DEBUG TEAM_STATS_URLS:", TEAM_STATS_URLS)
-    if not TEAM_STATS_URLS:
-        raise SystemExit(
-            "TEAM_STATS_URLS is empty.\n"
-            "Edit epc_stats_leaders.py and add each EPC team name + stats URL."
-        )
 
     all_players: List[PlayerStat] = []
     all_teams: List[TeamStat] = []
@@ -262,7 +257,3 @@ def main():
         json.dump(leaders, f, indent=2)
 
     print("Wrote epc_leaders.json")
-
-
-if __name__ == "__main__":
-    main()
