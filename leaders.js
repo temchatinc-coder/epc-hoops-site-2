@@ -1,0 +1,1 @@
+fetch('epc_leaders.json').then(r=>r.json()).then(data=>{document.getElementById('leaders-container').innerHTML = JSON.stringify(data);});
