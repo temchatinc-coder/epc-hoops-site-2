@@ -7,19 +7,10 @@ import requests
 from bs4 import BeautifulSoup
 
 # =====================================================================
-# CONFIG: FILL THESE IN YOURSELF (super important!)
+# EPC TEAM STATS URLS (TEAM PAGES, NOT SCHOOL/SEASON PAGES)
 # =====================================================================
 
-# Copy each EPC team STATS PAGE URL from your browser address bar and
-# put it here. The keys are whatever label you want for the team.
-#
-# Example: 
-#  - Open Parkland stats page in your browser
-#  - Copy full URL (should end in /stats)
-#  - Paste it as the value for "Parkland"
-#
 TEAM_STATS_URLS: Dict[str, str] = {
-   TEAM_STATS_URLS: Dict[str, str] = {
     "Parkland": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/parkland-high-school-allentown-pa/stats",
     "Liberty": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/liberty-high-school-bethlehem-pa/stats",
     "William Allen": "https://highschoolsports.lehighvalleylive.com/boysbasketball/team/william-allen-high-school-allentown-pa/stats",
@@ -41,7 +32,7 @@ TEAM_STATS_URLS: Dict[str, str] = {
 }
 
 # Minimum games played to be included in individual leaders
-MIN_GAMES = 1  # you can bump to 5+ later if you want
+MIN_GAMES = 1  # bump later if you want
 
 
 # =====================================================================
@@ -53,7 +44,7 @@ class PlayerStat:
     player: str
     team: str
     gp: int
-    pts: float
+    pts: int
     two_pt: int
     three_pt: int
     fta: int
@@ -72,7 +63,7 @@ class PlayerStat:
 class TeamStat:
     team: str
     gp: int
-    pts_for: float
+    pts_for: int
 
     @property
     def ppg(self) -> float:
@@ -92,7 +83,7 @@ def get_soup(url: str) -> BeautifulSoup:
 
 def to_int(value: str) -> int:
     value = value.strip()
-    if value == "—" or value == "-":
+    if value in ("—", "-", ""):
         return 0
     try:
         return int(value)
@@ -120,43 +111,37 @@ def parse_team_stats(team_name: str, stats_url: str) -> (List[PlayerStat], TeamS
     if not table:
         raise RuntimeError(f"No table found on stats page for {team_name}: {stats_url}")
 
-    # header row (just to confirm we’re on the right table)
-    header_cells = [th.get_text(strip=True).upper() for th in table.find("thead").find_all("th")]
-    # We expect something like: ["GAME", "2PT", "3PT", "FTA", "FTM", "PTS", "REB", "AST", "BLK", "STL", "GP"]
-    # If headers differ a bit, we still proceed as long as there are enough columns.
+    thead = table.find("thead")
+    tbody = table.find("tbody")
+    if not thead or not tbody:
+        raise RuntimeError(f"No thead/tbody structure on stats page for {team_name}: {stats_url}")
 
-    body = table.find("tbody")
-    player_rows = body.find_all("tr")
-
+    rows = tbody.find_all("tr")
     players: List[PlayerStat] = []
 
     total_team_pts = 0
     max_gp = 0
 
-    for row in player_rows:
+    for row in rows:
         cells = row.find_all("td")
         if not cells:
             continue
 
-        # "Totals" row is usually the last one; first cell starts with "Total:"
         first_text = cells[0].get_text(strip=True)
         if first_text.lower().startswith("total"):
-            # we can use this row to infer team total points & games if you like
-            # but we will instead compute from players for now.
+            # Skip totals row
             continue
 
-        # First cell: "Marcus Temchatin Freshman" – we just want the name
         full_name_cell = cells[0].get_text(" ", strip=True)
         # Strip grade labels if present
+        player_name = full_name_cell
         for grade_word in [" Senior", " Junior", " Sophomore", " Freshman"]:
             if grade_word in full_name_cell:
                 player_name = full_name_cell.split(grade_word)[0]
                 break
-        else:
-            player_name = full_name_cell
 
-        # Now numeric stats – based on position in row (from screenshot)
-        # Index: 0 = name/grade
+        # Column indices based on screenshot:
+        # 0 = Player/Grade
         val_2pt = to_int(cells[1].get_text())
         val_3pt = to_int(cells[2].get_text())
         val_fta = to_int(cells[3].get_text())
@@ -193,15 +178,12 @@ def parse_team_stats(team_name: str, stats_url: str) -> (List[PlayerStat], TeamS
 
 
 def build_leaders(players: List[PlayerStat], teams: List[TeamStat]) -> dict:
-    # filter by min games
     eligible_players = [p for p in players if p.gp >= MIN_GAMES]
+    eligible_teams = [t for t in teams if t.gp > 0]
 
     top_ppg = sorted(eligible_players, key=lambda p: p.ppg, reverse=True)[:15]
     top_pts = sorted(eligible_players, key=lambda p: p.pts, reverse=True)[:15]
     top_threes = sorted(eligible_players, key=lambda p: p.three_pt, reverse=True)[:15]
-
-    # Team scoring leaders (points per game)
-    eligible_teams = [t for t in teams if t.gp > 0]
     top_team_ppg = sorted(eligible_teams, key=lambda t: t.ppg, reverse=True)[:10]
 
     return {
@@ -255,6 +237,7 @@ def build_leaders(players: List[PlayerStat], teams: List[TeamStat]) -> dict:
 # =====================================================================
 
 def main():
+    print("DEBUG TEAM_STATS_URLS:", TEAM_STATS_URLS)
     if not TEAM_STATS_URLS:
         raise SystemExit(
             "TEAM_STATS_URLS is empty.\n"
@@ -269,7 +252,7 @@ def main():
             players, team_stat = parse_team_stats(team_name, url)
             all_players.extend(players)
             all_teams.append(team_stat)
-            time.sleep(1.0)  # be polite to the site
+            time.sleep(1.0)  # be gentle with the site
         except Exception as e:
             print(f"Error with {team_name}: {e}")
 
